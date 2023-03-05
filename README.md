@@ -1,2 +1,2 @@
 # Database-Application
-Leaning and making databases for my university here
+Implementing simplified Discord database for a university subject here.
