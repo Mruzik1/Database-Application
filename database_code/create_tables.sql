@@ -1,5 +1,4 @@
 -- creating main tables
-
 CREATE TABLE server (
     server_id INT NOT NULL PRIMARY KEY,
     server_name VARCHAR2(32) NOT NULL,
@@ -53,7 +52,6 @@ CREATE TABLE reaction (
 );
 
 -- adding foreign keys: 1-to-1 and 1-to-M
-
 ALTER TABLE user_role
     ADD FOREIGN KEY (server_id) REFERENCES server(server_id);
 
@@ -72,7 +70,6 @@ ALTER TABLE reaction
     ADD FOREIGN KEY (message_id) REFERENCES message(message_id);
 
 -- creating junction tables for M-to-N relationships
-
 CREATE TABLE user_server_map (
     user_id INT REFERENCES discord_user(user_id),
     server_id INT REFERENCES server(server_id),
