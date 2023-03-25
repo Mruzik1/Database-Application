@@ -149,7 +149,7 @@ INSERT INTO channel (channel_id, server_id, channel_name, channel_type)
 INSERT INTO channel (channel_id, server_id, channel_name, channel_type)
     VALUES (seq_channel.NEXTVAL, 3, 'public-chat', 0);
 
--- toice channels
+-- voice channels
 INSERT INTO channel (channel_id, server_id, channel_name, channel_type)
     VALUES (seq_channel.NEXTVAL, 1, 'music-room', 1);
 
@@ -164,7 +164,7 @@ INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
     VALUES (seq_message.NEXTVAL, 0, 0, 'Hello world!', TIMESTAMP '2023-03-23 12:34:56.789');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 4, 0, 'How are you?', TIMESTAMP '2023-03-23 12:35:00.123');
+    VALUES (seq_message.NEXTVAL, 1, 0, 'How are you?', TIMESTAMP '2023-03-23 12:35:00.123');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
     VALUES (seq_message.NEXTVAL, 2, 3, 'I am doing well, thanks for asking!', TIMESTAMP '2023-03-23 12:35:04.567');
@@ -173,7 +173,7 @@ INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
     VALUES (seq_message.NEXTVAL, 3, 1, 'Hey guys, check out this meme!', TIMESTAMP '2023-03-23 12:35:08.901');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 4, 5, 'LOL, that is hilarious!', TIMESTAMP '2023-03-23 12:35:12.345');
+    VALUES (seq_message.NEXTVAL, 1, 5, 'LOL, that is hilarious!', TIMESTAMP '2023-03-23 12:35:12.345');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
     VALUES (seq_message.NEXTVAL, 0, 4, 'What are you all up to today?', TIMESTAMP '2023-03-23 12:35:16.789');
@@ -185,7 +185,7 @@ INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
     VALUES (seq_message.NEXTVAL, 2, 8, 'I am studying for a test, wish me luck!', TIMESTAMP '2023-03-23 12:35:24.567');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 4, 9, 'Good luck!', TIMESTAMP '2023-03-23 12:35:28.901');
+    VALUES (seq_message.NEXTVAL, 2, 9, 'Good luck!', TIMESTAMP '2023-03-23 12:35:28.901');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
     VALUES (seq_message.NEXTVAL, 3, 6, 'Anyone want to play some games later?', TIMESTAMP '2023-03-23 12:35:32.345');

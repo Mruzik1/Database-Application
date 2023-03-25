@@ -100,24 +100,48 @@ CREATE TABLE message_emoji_map (
     PRIMARY KEY (message_id, emoji_id)
 );
 
--- adding needed constraints
-ALTER TABLE message
-    ADD CONSTRAINT ck_channel_type CHECK (
-        channel_id IN (
-            SELECT channel_id
-            FROM channel
-            WHERE channel_type = 0
-        )
-    );
+-- adding needed constraints (using triggers because it's not working with CHECK due to the nested selects)
+-- sending messages to the right channel
+CREATE TRIGGER trg_channel_type
+    BEFORE INSERT OR UPDATE ON message
+    FOR EACH ROW
+    DECLARE
+        channel_type INT;
+    BEGIN
+        -- select all channel_ids with a text type
+        SELECT c.channel_type INTO channel_type
+        FROM channel c
+        WHERE c.channel_id = :new.channel_id;
 
-ALTER TABLE reaction
-    ADD CONSTRAINT ck_same_server CHECK (
-        (SELECT c.server_id
+        -- raise an error if the condition is true
+        IF channel_type != 0 THEN 
+            RAISE_APPLICATION_ERROR(-20001, 'Cannot send a message to a voice channel.');
+        END IF;
+    END;
+/
+
+-- checking if the reaction's emoji is on the same server as the message
+CREATE TRIGGER trg_same_server
+    BEFORE INSERT OR UPDATE ON reaction
+    FOR EACH ROW
+    DECLARE
+        channel_server_id INT;
+        emoji_server_id INT;
+    BEGIN
+        -- getting a server id from the message's channel
+        SELECT c.server_id INTO channel_server_id
         FROM channel c
         JOIN message m ON m.channel_id = c.channel_id
-        WHERE m.message_id = reaction.message_id)
-        =
-        (SELECT e.server_id
+        WHERE m.message_id = :new.message_id;
+        
+        -- getting a server id of the emoji
+        SELECT e.server_id INTO emoji_server_id
         FROM emoji e
-        WHERE e.emoji_id = raction.emoji_id)
-    );
+        WHERE e.emoji_id = :new.emoji_id;
+
+        -- raise an error if the condition is true
+        IF channel_server_id != emoji_server_id THEN 
+            RAISE_APPLICATION_ERROR(-20001, 'Wrond server_id for an emoji and/or a message.');
+        END IF;
+    END;
+/
