@@ -101,8 +101,8 @@ CREATE TABLE message_emoji_map (
 );
 
 -- adding needed constraints (using triggers because it's not working with CHECK due to the nested selects)
--- sending messages to the right channel
-CREATE TRIGGER trg_channel_type
+-- message constraints
+CREATE TRIGGER trg_message_con
     BEFORE INSERT OR UPDATE ON message
     FOR EACH ROW
     DECLARE
@@ -113,15 +113,15 @@ CREATE TRIGGER trg_channel_type
         FROM channel c
         WHERE c.channel_id = :new.channel_id;
 
-        -- raise an error if the condition is true
+        -- sending messages to the right channel
         IF channel_type != 0 THEN 
             RAISE_APPLICATION_ERROR(-20001, 'Cannot send a message to a voice channel.');
         END IF;
     END;
 /
 
--- checking if the reaction's emoji is on the same server as the message
-CREATE TRIGGER trg_same_server
+-- reaction constraint
+CREATE TRIGGER trg_reaction_con
     BEFORE INSERT OR UPDATE ON reaction
     FOR EACH ROW
     DECLARE
@@ -139,7 +139,7 @@ CREATE TRIGGER trg_same_server
         FROM emoji e
         WHERE e.emoji_id = :new.emoji_id;
 
-        -- raise an error if the condition is true
+        -- checking if the reaction's emoji is on the same server as the message
         IF channel_server_id != emoji_server_id THEN 
             RAISE_APPLICATION_ERROR(-20001, 'Wrond server_id for an emoji and/or a message.');
         END IF;
