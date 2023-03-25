@@ -192,25 +192,25 @@ INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
 
 -- insert reactions
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 3, 1);
+    VALUES (seq_reaction.NEXTVAL, 0, 4);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
     VALUES (seq_reaction.NEXTVAL, 3, 0);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 2, 3);
+    VALUES (seq_reaction.NEXTVAL, 5, 4);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 5, 2);
+    VALUES (seq_reaction.NEXTVAL, 6, 0);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 1, 2);
+    VALUES (seq_reaction.NEXTVAL, 9, 0);
 
 -- drop the sequences
-DROP SEQUENCE seq_server;
-DROP SEQUENCE seq_user;
-DROP SEQUENCE seq_channel;
-DROP SEQUENCE seq_role;
-DROP SEQUENCE seq_emoji;
-DROP SEQUENCE seq_reaction;
-DROP SEQUENCE seq_message;
+-- DROP SEQUENCE seq_server;
+-- DROP SEQUENCE seq_user;
+-- DROP SEQUENCE seq_channel;
+-- DROP SEQUENCE seq_role;
+-- DROP SEQUENCE seq_emoji;
+-- DROP SEQUENCE seq_reaction;
+-- DROP SEQUENCE seq_message;
