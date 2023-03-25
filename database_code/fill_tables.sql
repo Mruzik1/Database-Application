@@ -1,45 +1,21 @@
 -- sequences for ids generating
-CREATE SEQUENCE seq_server
-    MINVALUE 0
-    START WITH 0
-    INCREMENT BY 1
-    NOCYCLE;
-
-CREATE SEQUENCE seq_user
-    MINVALUE 0
-    START WITH 0
-    INCREMENT BY 1
-    NOCYCLE;
-
-CREATE SEQUENCE seq_channel
-    MINVALUE 0
-    START WITH 0
-    INCREMENT BY 1
-    NOCYCLE;
-
-CREATE SEQUENCE seq_role
-    MINVALUE 0
-    START WITH 0
-    INCREMENT BY 1
-    NOCYCLE;
-
-CREATE SEQUENCE seq_emoji
-    MINVALUE 0
-    START WITH 0
-    INCREMENT BY 1
-    NOCYCLE;
-
-CREATE SEQUENCE seq_message
-    MINVALUE 0
-    START WITH 0
-    INCREMENT BY 1
-    NOCYCLE;
-
-CREATE SEQUENCE seq_reaction
-    MINVALUE 0
-    START WITH 0
-    INCREMENT BY 1
-    NOCYCLE;
+DECLARE
+    seq_names DBMS_SQL.VARCHAR2A;
+BEGIN
+    seq_names := DBMS_SQL.VARCHAR2A();
+	seq_names(1) := 'server';
+	seq_names(2) := 'user';
+    seq_names(3) := 'channel';
+    seq_names(4) := 'role';
+    seq_names(5) := 'emoji';
+    seq_names(6) := 'message';
+    seq_names(7) := 'reaction';
+    
+    FOR i IN seq_names.FIRST..seq_names.LAST LOOP
+        EXECUTE IMMEDIATE 'CREATE SEQUENCE seq_' || seq_names(i) || ' MINVALUE 0 START WITH 0 INCREMENT BY 1 NOCYCLE';
+    END LOOP;
+END;
+/
 
 -- insert servers
 INSERT INTO server (server_id, server_name, icon, region)
