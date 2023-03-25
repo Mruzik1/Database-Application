@@ -99,3 +99,25 @@ CREATE TABLE message_emoji_map (
     emoji_id INT REFERENCES emoji(emoji_id),
     PRIMARY KEY (message_id, emoji_id)
 );
+
+-- adding needed constraints
+ALTER TABLE message
+    ADD CONSTRAINT ck_channel_type CHECK (
+        channel_id IN (
+            SELECT channel_id
+            FROM channel
+            WHERE channel_type = 0
+        )
+    );
+
+ALTER TABLE reaction
+    ADD CONSTRAINT ck_same_server CHECK (
+        (SELECT c.server_id
+        FROM channel c
+        JOIN message m ON m.channel_id = c.channel_id
+        WHERE m.message_id = reaction.message_id)
+        =
+        (SELECT e.server_id
+        FROM emoji e
+        WHERE e.emoji_id = raction.emoji_id)
+    );
