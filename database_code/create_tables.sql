@@ -50,6 +50,7 @@ CREATE TABLE reaction (
     message_id INT NOT NULL,
     emoji_id INT NOT NULL
 );
+--
 
 -- adding foreign keys: 1-to-1 and 1-to-M
 ALTER TABLE user_role
@@ -68,6 +69,7 @@ ALTER TABLE message
 ALTER TABLE reaction
     ADD FOREIGN KEY (emoji_id) REFERENCES emoji(emoji_id)
     ADD FOREIGN KEY (message_id) REFERENCES message(message_id);
+--
 
 -- creating junction tables for M-to-N relationships
 CREATE TABLE user_server_map (
@@ -99,6 +101,7 @@ CREATE TABLE message_emoji_map (
     emoji_id INT REFERENCES emoji(emoji_id),
     PRIMARY KEY (message_id, emoji_id)
 );
+--
 
 -- adding needed constraints (using triggers because it's not working with CHECK due to the nested selects)
 -- message constraints
@@ -131,6 +134,7 @@ CREATE TRIGGER trg_message_con
         END IF;
     END;
 /
+--
 
 -- reaction constraint
 CREATE TRIGGER trg_reaction_con
@@ -157,3 +161,4 @@ CREATE TRIGGER trg_reaction_con
         END IF;
     END;
 /
+--
