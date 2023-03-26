@@ -107,15 +107,27 @@ CREATE TRIGGER trg_message_con
     FOR EACH ROW
     DECLARE
         channel_type INT;
+        channel_server_id INT;
+		user_server_count INT;
     BEGIN
-        -- select all channel_ids with a text type
-        SELECT c.channel_type INTO channel_type
+        -- get all channel types and server_ids
+        SELECT c.channel_type, c.server_id INTO channel_type, channel_server_id
         FROM channel c
         WHERE c.channel_id = :new.channel_id;
+
+		-- get the count of rows with a user's connection to the certain server from the user-server mapping table
+		SELECT COUNT(*) INTO user_server_count
+        FROM user_server_map usm
+        WHERE usm.user_id = :new.user_id AND usm.server_id = channel_server_id;
 
         -- sending messages to the right channel
         IF channel_type != 0 THEN 
             RAISE_APPLICATION_ERROR(-20001, 'Cannot send a message to a voice channel.');
+        END IF;
+
+        -- the message's author is the server's member
+        IF user_server_count <= 0 THEN 
+            RAISE_APPLICATION_ERROR(-20001, 'The message author is not a member of a server where the message was sent.');
         END IF;
     END;
 /

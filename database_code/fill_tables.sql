@@ -16,6 +16,7 @@ BEGIN
     END LOOP;
 END;
 /
+--
 
 -- insert servers
 INSERT INTO server (server_id, server_name, icon, region)
@@ -32,6 +33,7 @@ INSERT INTO server (server_id, server_name, icon, region)
     
 INSERT INTO server (server_id, server_name, icon, region)
     VALUES (seq_server.NEXTVAL, 'My Discord Server', 'discord-server-icon.png', 'US');
+--
 
 -- insert users
 INSERT INTO discord_user (user_id, user_name, email, phone_num, status, avatar)
@@ -63,6 +65,7 @@ INSERT INTO discord_user (user_id, user_name, email, phone_num, status, avatar)
 
 INSERT INTO discord_user (user_id, user_name, email, phone_num, status, avatar)
     VALUES (seq_user.NEXTVAL, 'JellyfishJive', 'jellyfishjive@hotmail.com', NULL, NULL, 'jellyfish_avatar.png');
+--
 
 -- insert roles
 INSERT INTO user_role (role_id, server_id, role_name, role_priority, color)
@@ -94,13 +97,14 @@ INSERT INTO user_role (role_id, server_id, role_name, role_priority, color)
 
 INSERT INTO user_role (role_id, server_id, role_name, role_priority, color)
     VALUES (seq_role.NEXTVAL, 3, 'Member', 2, '#3f51b5');
+--
 
 -- insert emojis
 INSERT INTO emoji (emoji_id, server_id, emoji_name, icon)
     VALUES (seq_emoji.NEXTVAL, 3, 'poggers', 'poggers.png');
 
 INSERT INTO emoji (emoji_id, server_id, emoji_name, icon)
-    VALUES (seq_emoji.NEXTVAL, 1, 'monkaS', 'monkas.png');
+    VALUES (seq_emoji.NEXTVAL, 0, 'monkaS', 'monkas.png');
 
 INSERT INTO emoji (emoji_id, server_id, emoji_name, icon)
     VALUES (seq_emoji.NEXTVAL, 1, 'Kappa', 'kappa.png');
@@ -110,6 +114,7 @@ INSERT INTO emoji (emoji_id, server_id, emoji_name, icon)
 
 INSERT INTO emoji (emoji_id, server_id, emoji_name, icon)
     VALUES (seq_emoji.NEXTVAL, 4, 'PepeHands', 'pepehands.png');
+--
 
 -- insert channels
 -- text channels
@@ -134,59 +139,57 @@ INSERT INTO channel (channel_id, server_id, channel_name, channel_type)
 
 INSERT INTO channel (channel_id, server_id, channel_name, channel_type)
     VALUES (seq_channel.NEXTVAL, 2, 'voice-channel', 1);
+--
+
+-- filling the user-server junction table, since it's needed to prevent the constraint errors while inserting messages
+INSERT INTO user_server_map (user_id, server_id)
+SELECT DISTINCT
+    mod(level - 1, 10) AS user_id,
+    mod(level - 1, 5) AS server_id
+FROM dual
+CONNECT BY level <= 10
+ORDER BY user_id, server_id;
+--
 
 -- insert messages
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 0, 0, 'Hello world!', TIMESTAMP '2023-03-23 12:34:56.789');
+    VALUES (seq_message.NEXTVAL, 2, 0, 'Hello world!', TIMESTAMP '2023-03-23 12:34:56.789');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 1, 0, 'How are you?', TIMESTAMP '2023-03-23 12:35:00.123');
+    VALUES (seq_message.NEXTVAL, 1, 2, 'How are you?', TIMESTAMP '2023-03-23 12:35:00.123');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 2, 3, 'I am doing well, thanks for asking!', TIMESTAMP '2023-03-23 12:35:04.567');
+    VALUES (seq_message.NEXTVAL, 3, 3, 'I am doing well, thanks for asking!', TIMESTAMP '2023-03-23 12:35:04.567');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 3, 1, 'Hey guys, check out this meme!', TIMESTAMP '2023-03-23 12:35:08.901');
+    VALUES (seq_message.NEXTVAL, 0, 4, 'Hey guys, check out this meme!', TIMESTAMP '2023-03-23 12:35:08.901');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 1, 5, 'LOL, that is hilarious!', TIMESTAMP '2023-03-23 12:35:12.345');
+    VALUES (seq_message.NEXTVAL, 2, 5, 'LOL, that is hilarious!', TIMESTAMP '2023-03-23 12:35:12.345');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 0, 4, 'What are you all up to today?', TIMESTAMP '2023-03-23 12:35:16.789');
+    VALUES (seq_message.NEXTVAL, 1, 7, 'What are you all up to today?', TIMESTAMP '2023-03-23 12:35:16.789');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 3, 2, 'Just hanging out with some friends!', TIMESTAMP '2023-03-23 12:35:20.123');
+    VALUES (seq_message.NEXTVAL, 3, 8, 'Just hanging out with some friends!', TIMESTAMP '2023-03-23 12:35:20.123');
 
 INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 2, 8, 'I am studying for a test, wish me luck!', TIMESTAMP '2023-03-23 12:35:24.567');
-
-INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 2, 9, 'Good luck!', TIMESTAMP '2023-03-23 12:35:28.901');
-
-INSERT INTO message (message_id, channel_id, user_id, text, msg_date)
-    VALUES (seq_message.NEXTVAL, 3, 6, 'Anyone want to play some games later?', TIMESTAMP '2023-03-23 12:35:32.345');
+    VALUES (seq_message.NEXTVAL, 0, 9, 'I am studying for a test, wish me luck!', TIMESTAMP '2023-03-23 12:35:24.567');
+--
 
 -- insert reactions
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 0, 4);
+    VALUES (seq_reaction.NEXTVAL, 0, 1);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 3, 0);
+    VALUES (seq_reaction.NEXTVAL, 2, 0);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 5, 4);
+    VALUES (seq_reaction.NEXTVAL, 7, 4);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
     VALUES (seq_reaction.NEXTVAL, 6, 0);
 
 INSERT INTO reaction (reaction_id, message_id, emoji_id)
-    VALUES (seq_reaction.NEXTVAL, 9, 0);
-
--- drop the sequences
--- DROP SEQUENCE seq_server;
--- DROP SEQUENCE seq_user;
--- DROP SEQUENCE seq_channel;
--- DROP SEQUENCE seq_role;
--- DROP SEQUENCE seq_emoji;
--- DROP SEQUENCE seq_reaction;
--- DROP SEQUENCE seq_message;
+    VALUES (seq_reaction.NEXTVAL, 4, 1);
+--
