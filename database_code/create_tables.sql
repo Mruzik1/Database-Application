@@ -7,7 +7,7 @@ CREATE TABLE server (
 );
 
 CREATE TABLE discord_user (
-    user_id INT NOT NULL PRIMARY KEY,
+    discord_user_id INT NOT NULL PRIMARY KEY,
     user_name VARCHAR2(32) NOT NULL,
     email VARCHAR2(32) NOT NULL,
     phone_num VARCHAR2(32),
@@ -16,7 +16,7 @@ CREATE TABLE discord_user (
 );
 
 CREATE TABLE user_role (
-    role_id INT NOT NULL PRIMARY KEY,
+    user_role_id INT NOT NULL PRIMARY KEY,
     server_id INT NOT NULL,
     role_name VARCHAR2(32) NOT NULL,
     role_priority INT NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE channel (
 CREATE TABLE message (
     message_id INT NOT NULL PRIMARY KEY,
     channel_id INT NOT NULL,
-    user_id INT NOT NULL,
+    discord_user_id INT NOT NULL,
     text VARCHAR2(1024) NOT NULL,
     msg_date TIMESTAMP NOT NULL
 );
@@ -64,7 +64,7 @@ ALTER TABLE channel
 
 ALTER TABLE message
     ADD FOREIGN KEY (channel_id) REFERENCES channel(channel_id)
-    ADD FOREIGN KEY (user_id) REFERENCES discord_user(user_id);
+    ADD FOREIGN KEY (discord_user_id) REFERENCES discord_user(discord_user_id);
 
 ALTER TABLE reaction
     ADD FOREIGN KEY (emoji_id) REFERENCES emoji(emoji_id)
@@ -73,27 +73,27 @@ ALTER TABLE reaction
 
 -- creating junction tables for M-to-N relationships
 CREATE TABLE user_server_map (
-    user_id INT REFERENCES discord_user(user_id),
+    discord_user_id INT REFERENCES discord_user(discord_user_id),
     server_id INT REFERENCES server(server_id),
-    PRIMARY KEY (user_id, server_id)
+    PRIMARY KEY (discord_user_id, server_id)
 );
 
 CREATE TABLE user_friend_map (
-    user_id INT REFERENCES discord_user(user_id),
-    friend_id INT REFERENCES discord_user(user_id),
-    PRIMARY KEY (user_id, friend_id)
+    discord_user_id INT REFERENCES discord_user(discord_user_id),
+    friend_id INT REFERENCES discord_user(discord_user_id),
+    PRIMARY KEY (discord_user_id, friend_id)
 );
 
 CREATE TABLE user_reaction_map (
-    user_id INT NOT NULL REFERENCES discord_user(user_id),
+    discord_user_id INT NOT NULL REFERENCES discord_user(discord_user_id),
     reaction_id INT NOT NULL REFERENCES reaction(reaction_id),
-    PRIMARY KEY (user_id, reaction_id)
+    PRIMARY KEY (discord_user_id, reaction_id)
 );
 
 CREATE TABLE user_role_map (
-    user_id INT NOT NULL REFERENCES discord_user(user_id),
-    role_id INT REFERENCES user_role(role_id),
-    PRIMARY KEY (user_id, role_id)
+    discord_user_id INT NOT NULL REFERENCES discord_user(discord_user_id),
+    user_role_id INT REFERENCES user_role(user_role_id),
+    PRIMARY KEY (discord_user_id, user_role_id)
 );
 
 CREATE TABLE message_emoji_map (
@@ -121,7 +121,7 @@ CREATE TRIGGER trg_message_con
 		-- get the count of rows with a user's connection to the certain server from the user-server mapping table
 		SELECT COUNT(*) INTO user_server_count
         FROM user_server_map usm
-        WHERE usm.user_id = :new.user_id AND usm.server_id = channel_server_id;
+        WHERE usm.discord_user_id = :new.discord_user_id AND usm.server_id = channel_server_id;
 
         -- sending messages to the right channel
         IF channel_type != 0 THEN 
