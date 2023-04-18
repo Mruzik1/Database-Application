@@ -4,6 +4,13 @@
 
 
 -- Non-trivial select #1
+-- Here I'm getting a view of server stats (number of users, channels, roles, etc)
+CREATE VIEW server_stats AS
+    SELECT s.server_id, s.server_name, COUNT(DISTINCT usm.discord_user_id)
+    FROM server s
+    INNER JOIN user_server_map usm ON s.server_id = usm.server_id
+    GROUP BY s.server_id, s.server_name;
+    
 
 -- Non-trivial select #2
 
