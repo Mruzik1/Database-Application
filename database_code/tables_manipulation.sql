@@ -29,7 +29,6 @@ CREATE VIEW msg_questions AS
     INNER JOIN message m ON c.channel_id = m.channel_id
     WHERE REGEXP_LIKE(m.text, '\?\s*$');
 
-
 -- 2 tables join
 -- Getting all emojis (ids and names) that were used in messages and how many times.
 -- In our case we used every emoji, but it's possible to check the view by deleting one or several rows in the message_emoji_map table:
@@ -67,7 +66,6 @@ CREATE VIEW reacted_users AS
     LEFT OUTER JOIN user_reaction_map urm ON urm.discord_user_id = du.discord_user_id
     GROUP BY du.discord_user_id;
 
-
 -- Aggregation #1
 -- Just getting an average number of text and voice channels on all servers
 CREATE VIEW avg_text_voice AS
@@ -86,7 +84,6 @@ CREATE VIEW role_priorities_count AS
     GROUP BY ur.role_priority
     ORDER BY ur.role_priority;
 
-
 -- Set operators
 -- Get emojis that weren't used in reactions
 CREATE VIEW unused_emojis AS
@@ -101,8 +98,25 @@ CREATE VIEW unused_emojis AS
     )
     INNER JOIN emoji e ON e_id = e.emoji_id;
 
-
 -- Nested select #1
+-- Getting servers where a message was sent using reactions on the message
+-- Note: it would be better to use tables joining here, but as an example I think it's ok
+CREATE VIEW reactions_servers_map AS
+    SELECT
+        r.reaction_id,
+        (
+            SELECT s.server_id
+            FROM server s
+            WHERE s.server_id = (
+                SELECT c.server_id
+                FROM channel c
+                WHERE c.channel_id = (
+                    SELECT m.channel_id
+                    FROM message m
+                    WHERE m.message_id = r.reaction_id
+                )
+            )
+        ) server_id
+    FROM reaction r;
 
-
--- Nested select #1
+-- Nested select #2
