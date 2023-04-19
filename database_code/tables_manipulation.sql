@@ -99,7 +99,7 @@ CREATE VIEW unused_emojis AS
     INNER JOIN emoji e ON e_id = e.emoji_id;
 
 -- Nested select #1
--- Getting servers where a message was sent using reactions on the message
+-- Getting servers where reactions belong to
 -- Note: it would be better to use tables joining here, but as an example I think it's ok
 CREATE VIEW reactions_servers_map AS
     SELECT
@@ -120,3 +120,17 @@ CREATE VIEW reactions_servers_map AS
     FROM reaction r;
 
 -- Nested select #2
+-- Users with high priority roles (> 1)
+CREATE VIEW high_priority_users AS
+    SELECT
+        du.discord_user_id high_priority_users
+    FROM discord_user du
+    WHERE du.discord_user_id IN (
+        SELECT urm.discord_user_id
+        FROM user_role_map urm
+        WHERE urm.user_role_id IN (
+            SELECT r.user_role_id
+            FROM user_role r
+            WHERE r.role_priority > 1
+        )
+    );
