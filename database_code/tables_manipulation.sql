@@ -77,10 +77,32 @@ CREATE VIEW avg_text_voice AS
     FROM channel c;
 
 -- Aggregation #2 
-
+-- A view with a count of every role's priority
+CREATE VIEW role_priorities_count AS
+    SELECT
+        ur.role_priority,
+        COUNT(ur.user_role_id) number_of_roles
+    FROM user_role ur
+    GROUP BY ur.role_priority
+    ORDER BY ur.role_priority;
 
 
 -- Set operators
+-- Get emojis that weren't used in reactions
+CREATE VIEW unused_emojis AS
+    SELECT 
+        e.emoji_id,
+        e.server_id,
+        e.emoji_name
+    FROM (
+        SELECT e.emoji_id e_id FROM emoji e
+        MINUS
+        SELECT r.emoji_id FROM reaction r
+    )
+    INNER JOIN emoji e ON e_id = e.emoji_id;
 
 
--- Nested select
+-- Nested select #1
+
+
+-- Nested select #1
