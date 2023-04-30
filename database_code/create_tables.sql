@@ -157,7 +157,7 @@ CREATE TRIGGER trg_reaction_con
 
         -- checking if the reaction's emoji is on the same server as the message
         IF channel_server_id != emoji_server_id THEN 
-            RAISE_APPLICATION_ERROR(-20001, 'Wrond server_id for an emoji and/or a message.');
+            RAISE_APPLICATION_ERROR(-20001, 'Wrong server_id for an emoji and/or a message.');
         END IF;
     END;
 /
