@@ -1,2 +1,2 @@
 # Database-Application
-Implementing simplified Discord database for a university subject here.
+Implementing a simplified Discord database for a university subject here.
